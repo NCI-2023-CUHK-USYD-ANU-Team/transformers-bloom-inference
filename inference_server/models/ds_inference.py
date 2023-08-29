@@ -39,7 +39,10 @@ class DSInferenceModel(Model):
             if os.path.isfile(checkpoints_json):
                 self.model = deepspeed.init_inference(
                     self.model,
-                    mp_size=get_world_size(),
+                    tensor_parallel={
+                                "tp_size": get_world_size()
+                                    },
+                    # tp_size=get_world_size(),
                     base_dir=downloaded_model_path,
                     dtype=args.dtype,
                     checkpoint=checkpoints_json,
@@ -52,7 +55,10 @@ class DSInferenceModel(Model):
                 with TemporaryCheckpointsJSON(downloaded_model_path) as checkpoints_json:
                     self.model = deepspeed.init_inference(
                         self.model,
-                        mp_size=get_world_size(),
+                        tensor_parallel={
+                                    "tp_size": get_world_size()
+                                        },
+                        # tp_size=get_world_size(),
                         base_dir=downloaded_model_path,
                         dtype=args.dtype,
                         checkpoint=checkpoints_json,
